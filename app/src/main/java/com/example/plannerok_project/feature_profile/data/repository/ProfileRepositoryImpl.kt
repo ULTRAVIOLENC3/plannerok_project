@@ -30,7 +30,7 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun updateUser(accessToken: String?, updateUserRequest: UpdateUserRequest): Resource<UpdateUserResponse> {
         return try {
-            val response = profileApi.updateUser(accessToken, updateUserRequest)
+            val response = profileApi.updateUser(accessToken = "Bearer $accessToken", updateUserRequest)
             if (response.isSuccessful && response.body() != null){
                 Resource.Success(response.body()!!)
             } else {

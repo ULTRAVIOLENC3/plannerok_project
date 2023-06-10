@@ -2,6 +2,8 @@ package com.example.plannerok_project.feature_profile.presentation.edit_user_pro
 
 import android.content.ContentResolver
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Base64
@@ -16,9 +18,11 @@ import com.example.plannerok_project.feature_profile.domain.model.request.Update
 import com.example.plannerok_project.feature_profile.domain.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 import javax.inject.Inject
 
-// #TODO: Засунуть в эмулятор картинку и роверить функционал загрузки аватарки.
+// #TODO: Засунуть в эмулятор картинку и проверить функционал загрузки аватарки.
 
 @HiltViewModel
 class EditUserProfileActivityViewModel @Inject constructor(
@@ -65,8 +69,14 @@ class EditUserProfileActivityViewModel @Inject constructor(
     val status: LiveData<String?>
         get() = _status
 
+    private val _avatarTest = MutableLiveData<String?>()
+    val avatarTest: LiveData<String?>
+        get() = _avatarTest
+
+
     var processedImage: String? = ""
     var selectedImageName: String? = ""
+    var avatarForTest: String? = ""
 
 
     fun fetchUserData() {
@@ -78,6 +88,7 @@ class EditUserProfileActivityViewModel @Inject constructor(
                 LocalData.PHONE,
                 LocalData.BIO,
                 LocalData.AVATAR,
+                LocalData.AVATAR_TEST,
 
                 LocalData.INSTAGRAM,
                 LocalData.VK,
@@ -90,6 +101,7 @@ class EditUserProfileActivityViewModel @Inject constructor(
             val phoneNumber = userDataMap[LocalData.PHONE]
             val userBio = userDataMap[LocalData.BIO]
             val avatar = userDataMap[LocalData.AVATAR]
+            val avatarTest = userDataMap[LocalData.AVATAR_TEST]
 
             val instagram = userDataMap[LocalData.INSTAGRAM]
             val vk = userDataMap[LocalData.VK]
@@ -102,6 +114,7 @@ class EditUserProfileActivityViewModel @Inject constructor(
             _phoneNumber.value = phoneNumber
             _userBio.value = userBio
             _avatar.value = avatar
+            _avatarTest.value = avatarTest
 
             // Data for request only
             _instagram.value = instagram
@@ -142,10 +155,13 @@ class EditUserProfileActivityViewModel @Inject constructor(
             if (response is Resource.Success) {
                 val dataPairs = arrayOf(
                     LocalData.AVATAR to LocalData.PreferenceValue.StringValue(response.data?.avatars?.avatar),
-                    LocalData.AVATAR to LocalData.PreferenceValue.StringValue(response.data?.avatars?.avatar),
-                    LocalData.AVATAR to LocalData.PreferenceValue.StringValue(response.data?.avatars?.avatar),
+                    LocalData.BIG_AVATAR to LocalData.PreferenceValue.StringValue(response.data?.avatars?.bigAvatar),
+                    LocalData.MINI_AVATAR to LocalData.PreferenceValue.StringValue(response.data?.avatars?.miniAvatar),
                 )
                 localData.updateUserData(*dataPairs)
+                val avatarTest =
+                    LocalData.AVATAR_TEST to LocalData.PreferenceValue.StringValue(avatarForTest)
+                localData.updateUserData(avatarTest)
             }
         }
     }
@@ -170,15 +186,27 @@ class EditUserProfileActivityViewModel @Inject constructor(
         return fileName
     }
 
-    fun processImage(imageUri: Uri, contentResolver: ContentResolver): String? {
-        var base64String: String? = null
+    fun encodeBitmapIntoBase64(bitmap: Bitmap?): String {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+        val byteArray = byteArrayOutputStream.toByteArray()
+        return Base64.encodeToString(byteArray, Base64.DEFAULT)
+    }
 
-        contentResolver.openInputStream(imageUri)?.use { inputStream ->
-            val byteArray = inputStream.readBytes()
-
-            base64String = Base64.encodeToString(byteArray, Base64.DEFAULT)
+    fun encodeImageIntoBitmap(imageUri: Uri, contentResolver: ContentResolver): Bitmap? {
+        return try {
+            contentResolver.openInputStream(imageUri)?.use { inputStream ->
+                BitmapFactory.decodeStream(inputStream)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
         }
-        return base64String
+    }
+
+    fun decodeBase64IntoBitmap(base64String: String?): Bitmap {
+        val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
     }
 
 }

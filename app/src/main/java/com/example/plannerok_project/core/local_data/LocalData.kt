@@ -24,6 +24,7 @@ class LocalData(private val context: Context) {
         val AVATAR = stringPreferencesKey("avatar")
         val BIG_AVATAR = stringPreferencesKey("bigAvatar")
         val MINI_AVATAR = stringPreferencesKey("miniAvatar")
+        val AVATAR_TEST = stringPreferencesKey("avatarTest")
         val BIRTHDAY = stringPreferencesKey("birthday")
         val CITY = stringPreferencesKey("city")
         val COMPLETED_TASK = intPreferencesKey("completedTask")

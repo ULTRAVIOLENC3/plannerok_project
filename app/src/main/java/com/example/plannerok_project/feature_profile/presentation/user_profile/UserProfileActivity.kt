@@ -1,6 +1,7 @@
 package com.example.plannerok_project.feature_profile.presentation.user_profile
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -35,11 +36,12 @@ class UserProfileActivity : ComponentActivity() {
 
         viewModel = ViewModelProvider(this).get(UserProfileActivityViewModel::class.java)
 
-        viewModel.getCurrentUser()
+        viewModel.getUserProfileData()
 
-        viewModel.avatar.observe(this) { avatar ->
-            Glide.with(this)
-                .load(avatar)
+        viewModel.avatarTest.observe(this) { avatar ->
+            Glide.with(binding.civUserPfp)
+                .asBitmap()
+                .load(viewModel.decodeBase64IntoBitmap(avatar))
                 .into(binding.civUserPfp)
         }
 
@@ -58,6 +60,10 @@ class UserProfileActivity : ComponentActivity() {
 
         viewModel.phoneNumber.observe(this) { phoneNumber ->
             updateEditText(binding.etPhoneNumberProfile, phoneNumber)
+        }
+
+        viewModel.bio.observe(this) { bio ->
+            updateEditText(binding.etUserBioProfile, bio)
         }
 
         binding.btnEditProfile.setOnClickListener {

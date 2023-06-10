@@ -1,5 +1,8 @@
 package com.example.plannerok_project.feature_profile.presentation.user_profile
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,6 +25,7 @@ class UserProfileActivityViewModel @Inject constructor(
 ) : ViewModel() {
 
     private lateinit var accessToken: String
+    private var isDataFetched = false
 
     private val _city = MutableLiveData<String?>()
     val city: LiveData<String?>
@@ -39,10 +43,28 @@ class UserProfileActivityViewModel @Inject constructor(
     val phoneNumber: LiveData<String?>
         get() = _phoneNumber
 
+    private val _bio = MutableLiveData<String?>()
+    val bio: LiveData<String?>
+        get() = _bio
+
    private val _avatar = MutableLiveData<String?>()
     val avatar: LiveData<String?>
         get() = _avatar
 
+   private val _avatarTest = MutableLiveData<String?>()
+    val avatarTest: LiveData<String?>
+        get() = _avatarTest
+
+
+// Кэширует данные.
+    fun getUserProfileData() {
+        if (isDataFetched) {
+            fetchUserData()
+            isDataFetched = true
+        } else {
+            getCurrentUser()
+        }
+    }
 
     fun fetchUserData() {
         viewModelScope.launch {
@@ -50,13 +72,19 @@ class UserProfileActivityViewModel @Inject constructor(
                 LocalData.CITY,
                 LocalData.BIRTHDAY,
                 LocalData.USERNAME,
-                LocalData.PHONE
+                LocalData.PHONE,
+                LocalData.BIO,
+                LocalData.AVATAR,
+                LocalData.AVATAR_TEST
             )
 
             val city = userDataMap[LocalData.CITY]
             val birthday = userDataMap[LocalData.BIRTHDAY]
             val username = userDataMap[LocalData.USERNAME]
             val phoneNumber = userDataMap[LocalData.PHONE]
+            val bio = userDataMap[LocalData.BIO]
+            val avatar = userDataMap[LocalData.AVATAR]
+            val avatarTest = userDataMap[LocalData.AVATAR_TEST]
 
 
             Log.d(TAG, "PHONE NUMBER: $phoneNumber")
@@ -65,6 +93,9 @@ class UserProfileActivityViewModel @Inject constructor(
             _birthday.value = birthday
             _username.value = username
             _phoneNumber.value = phoneNumber
+            _bio.value = bio
+            _avatar.value = avatar
+            _avatarTest.value = avatarTest
         }
     }
 
@@ -97,6 +128,15 @@ class UserProfileActivityViewModel @Inject constructor(
                 fetchUserData()
             }
         }
+    }
+
+    fun decodeBase64IntoBitmap(base64String: String?): Bitmap? {
+        if (base64String == null || base64String.isEmpty()) {
+            return null
+        }
+
+        val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
     }
 
 }

@@ -1,35 +1,26 @@
 package com.example.plannerok_project.feature_profile.presentation.edit_user_profile
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
-import android.util.Base64
 import android.widget.EditText
-import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.example.plannerok_project.R
 import com.example.plannerok_project.databinding.ActivityEditUserProfileBinding
 import com.example.plannerok_project.feature_profile.presentation.user_profile.UserProfileActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
-import javax.inject.Inject
 
 // #TODO: Добавить функционал выбора камеры.
 
 @AndroidEntryPoint
 class EditUserProfileActivity : ComponentActivity() {
     private lateinit var binding: ActivityEditUserProfileBinding
-    lateinit var viewModel: EditUserProfileActivityViewModel
+    private lateinit var viewModel: EditUserProfileActivityViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,10 +34,15 @@ class EditUserProfileActivity : ComponentActivity() {
         viewModel.fetchUserData()
 
 
-        viewModel.avatar.observe(this) { avatar ->
-            if (File(avatar).exists() && File(avatar).isFile()) {
+        viewModel.avatarTest.observe(this) { avatar ->
+            if (avatar != null && File(avatar).exists() && File(avatar).isFile()) {
                 Glide.with(binding.civEditUserPfp)
-                    .load(loadBase64ImageIntoImageView(avatar, binding.civEditUserPfp))
+                    .asBitmap()
+                    .load(viewModel.decodeBase64IntoBitmap(avatar))
+                    .into(binding.civEditUserPfp)
+            } else {
+                Glide.with(binding.civEditUserPfp)
+                    .load(R.drawable.ic_default_pfp)
                     .into(binding.civEditUserPfp)
             }
         }
@@ -110,9 +106,16 @@ class EditUserProfileActivity : ComponentActivity() {
     ) { imageUri: Uri? ->
         if (imageUri != null) {
             val fileName = viewModel.getFileNameFromUri(contentResolver, imageUri)
-            val image = viewModel.processImage(imageUri, contentResolver)
-            viewModel.processedImage = image
+            val imageBitmap = viewModel.encodeImageIntoBitmap(imageUri, contentResolver)
+            val imageBase64 = viewModel.encodeBitmapIntoBase64(imageBitmap)
+            viewModel.processedImage = imageBase64
             viewModel.selectedImageName = fileName
+            viewModel.avatarForTest = imageBase64
+
+            Glide.with(binding.civEditUserPfp)
+                .asBitmap()
+                .load(imageBitmap)
+                .into(binding.civEditUserPfp)
         }
     }
 
@@ -128,9 +131,4 @@ class EditUserProfileActivity : ComponentActivity() {
         editText.text = editableValue
     }
 
-
-    fun loadBase64ImageIntoImageView(base64String: String?, imageView: ImageView): Bitmap {
-        val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-    }
 }
