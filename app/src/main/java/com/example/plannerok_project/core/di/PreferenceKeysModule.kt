@@ -1,7 +1,7 @@
 package com.example.plannerok_project.core.di
 
 import android.content.Context
-import com.example.plannerok_project.core.LocalData.LocalData
+import com.example.plannerok_project.core.local_data.LocalData
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

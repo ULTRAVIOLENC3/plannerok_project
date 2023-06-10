@@ -24,13 +24,13 @@ class ProfileRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             Resource.Error("IOException")
         } catch (e: Exception) {
-            Resource.Error(" Exception")
+            Resource.Error("Exception")
         }
     }
 
-    override suspend fun updateUser(updateUserRequest: UpdateUserRequest): Resource<UpdateUserResponse> {
+    override suspend fun updateUser(accessToken: String?, updateUserRequest: UpdateUserRequest): Resource<UpdateUserResponse> {
         return try {
-            val response = profileApi.updateUser(updateUserRequest)
+            val response = profileApi.updateUser(accessToken, updateUserRequest)
             if (response.isSuccessful && response.body() != null){
                 Resource.Success(response.body()!!)
             } else {
@@ -39,7 +39,7 @@ class ProfileRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             Resource.Error("IOException")
         } catch (e: Exception) {
-            Resource.Error(" Exception")
+            Resource.Error("Exception")
         }
     }
 

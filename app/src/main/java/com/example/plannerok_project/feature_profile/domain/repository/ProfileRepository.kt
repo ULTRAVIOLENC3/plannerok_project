@@ -8,5 +8,5 @@ import com.example.plannerok_project.feature_profile.domain.model.response.Updat
 interface ProfileRepository {
     suspend fun getCurrentUser(accessToken: String?) : Resource<GetCurrentUserResponse>
 
-    suspend fun updateUser(updateUserRequest: UpdateUserRequest) : Resource<UpdateUserResponse>
+    suspend fun updateUser(accessToken: String?, updateUserRequest: UpdateUserRequest) : Resource<UpdateUserResponse>
 }

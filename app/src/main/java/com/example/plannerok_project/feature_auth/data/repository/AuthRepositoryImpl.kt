@@ -10,8 +10,8 @@ import com.example.plannerok_project.feature_auth.domain.model.response.SendAuth
 import com.example.plannerok_project.feature_auth.domain.model.response.UserRegisterResponse
 import com.example.plannerok_project.feature_auth.domain.repository.AuthRepository
 import com.example.plannerok_project.core.utils.Resource
-import com.example.plannerok_project.core.data.model.request.RefreshTokenRequest
-import com.example.plannerok_project.core.data.model.response.RefreshTokenResponse
+import com.example.plannerok_project.core.refresh_token.RefreshTokenRequest
+import com.example.plannerok_project.core.refresh_token.RefreshTokenResponse
 import java.io.IOException
 import javax.inject.Inject
 
@@ -30,7 +30,7 @@ class AuthRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             Resource.Error("IOException")
         } catch (e: Exception) {
-            Resource.Error(" Exception")
+            Resource.Error("Exception")
         }
     }
 
@@ -45,7 +45,7 @@ class AuthRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             Resource.Error("IOException")
         } catch (e: Exception) {
-            Resource.Error(" Exception")
+            Resource.Error("Exception")
         }
     }
 
@@ -60,7 +60,7 @@ class AuthRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             Resource.Error("IOException")
         } catch (e: Exception) {
-            Resource.Error(" Exception")
+            Resource.Error("Exception")
         }
     }
 
@@ -75,7 +75,7 @@ class AuthRepositoryImpl @Inject constructor(
         } catch (e: IOException) {
             Resource.Error("IOException")
         } catch (e: Exception) {
-            Resource.Error(" Exception")
+            Resource.Error("Exception")
         }
     }
 

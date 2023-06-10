@@ -5,12 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.plannerok_project.core.LocalData.LocalData
+import com.example.plannerok_project.core.local_data.LocalData
 import com.example.plannerok_project.core.utils.Resource
 import com.example.plannerok_project.feature_profile.domain.repository.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+
+// #TODO: Не допускать повторных API коллов при возвращении в профиль, если уже закешированы данные.
 
 @HiltViewModel
 class UserProfileActivityViewModel @Inject constructor(
@@ -36,6 +39,10 @@ class UserProfileActivityViewModel @Inject constructor(
     val phoneNumber: LiveData<String?>
         get() = _phoneNumber
 
+   private val _avatar = MutableLiveData<String?>()
+    val avatar: LiveData<String?>
+        get() = _avatar
+
 
     fun fetchUserData() {
         viewModelScope.launch {
@@ -45,13 +52,6 @@ class UserProfileActivityViewModel @Inject constructor(
                 LocalData.USERNAME,
                 LocalData.PHONE
             )
-//
-//            val city = userDataMap[LocalData.CITY]
-//                ?: throw IllegalStateException("City value is null")
-//            val birthday = userDataMap[LocalData.BIRTHDAY]
-//                ?: throw IllegalStateException("BIRTHDAY value is null")
-//            val username = userDataMap[LocalData.USERNAME]
-//                ?: throw IllegalStateException("USERNAME value is null")
 
             val city = userDataMap[LocalData.CITY]
             val birthday = userDataMap[LocalData.BIRTHDAY]
@@ -77,7 +77,7 @@ class UserProfileActivityViewModel @Inject constructor(
             val response = repository.getCurrentUser(accessToken)
             if (response is Resource.Success) {
                 val dataPairs = arrayOf(
-                    // Implement "avatars" later
+                    // #TODO: Может быть заменить всё это безобразие на привязку респонса к энтити, и уже из энтити обновлять префы.
                     LocalData.AVATAR to LocalData.PreferenceValue.StringValue(response.data?.profile_data?.avatar),
                     LocalData.BIRTHDAY to LocalData.PreferenceValue.StringValue(response.data?.profile_data?.birthday),
                     LocalData.CITY to LocalData.PreferenceValue.StringValue(response.data?.profile_data?.city),
@@ -94,6 +94,7 @@ class UserProfileActivityViewModel @Inject constructor(
                     LocalData.VK to LocalData.PreferenceValue.StringValue(response.data?.profile_data?.vk),
                 )
                 localData.updateUserData(*dataPairs)
+                fetchUserData()
             }
         }
     }

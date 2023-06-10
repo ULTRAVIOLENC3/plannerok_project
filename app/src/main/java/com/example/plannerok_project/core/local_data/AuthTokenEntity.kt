@@ -1,4 +1,4 @@
-package com.example.plannerok_project.core.LocalData
+package com.example.plannerok_project.core.local_data
 
 data class AuthTokenEntity(
     val access_token: String?,

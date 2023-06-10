@@ -1,4 +1,4 @@
-package com.example.plannerok_project.core.LocalData
+package com.example.plannerok_project.core.local_data
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -15,12 +15,15 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 class LocalData(private val context: Context) {
 
     companion object {
+        val IS_CACHED = booleanPreferencesKey("isCached")
+
         val ACCESS_TOKEN = stringPreferencesKey("accessToken")
         val REFRESH_TOKEN = stringPreferencesKey("refreshToken")
 
         val PHONE = stringPreferencesKey("phone")
         val AVATAR = stringPreferencesKey("avatar")
-        val AVATARS = stringPreferencesKey("avatars")
+        val BIG_AVATAR = stringPreferencesKey("bigAvatar")
+        val MINI_AVATAR = stringPreferencesKey("miniAvatar")
         val BIRTHDAY = stringPreferencesKey("birthday")
         val CITY = stringPreferencesKey("city")
         val COMPLETED_TASK = intPreferencesKey("completedTask")
@@ -63,5 +66,14 @@ class LocalData(private val context: Context) {
         }
         return result
     }
+
+
+    suspend fun retrieveAccessToken(): String? {
+        val preferencesMap = retrieveUserData(ACCESS_TOKEN)
+        val accessToken: String? = preferencesMap[ACCESS_TOKEN]
+        return accessToken
+    }
+
+
 
 }

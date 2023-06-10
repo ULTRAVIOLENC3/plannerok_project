@@ -1,7 +1,7 @@
 package com.example.plannerok_project.feature_auth.data.data_source
 
-import com.example.plannerok_project.core.data.model.request.RefreshTokenRequest
-import com.example.plannerok_project.core.data.model.response.RefreshTokenResponse
+import com.example.plannerok_project.core.refresh_token.RefreshTokenRequest
+import com.example.plannerok_project.core.refresh_token.RefreshTokenResponse
 import com.example.plannerok_project.feature_auth.domain.model.request.CheckAuthCodeRequest
 import com.example.plannerok_project.feature_auth.domain.model.request.SendAuthCodeRequest
 import com.example.plannerok_project.feature_auth.domain.model.request.UserRegisterRequest

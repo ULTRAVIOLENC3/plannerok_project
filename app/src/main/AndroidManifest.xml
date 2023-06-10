@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.camera.any" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
 
     <application
         android:name=".MyApp"
@@ -30,6 +35,7 @@
 
         <activity android:name=".feature_auth.presentation.registration.RegisterActivity" />
         <activity android:name=".feature_profile.presentation.user_profile.UserProfileActivity" />
+        <activity android:name=".feature_profile.presentation.edit_user_profile.EditUserProfileActivity" />
 
 
     </application>

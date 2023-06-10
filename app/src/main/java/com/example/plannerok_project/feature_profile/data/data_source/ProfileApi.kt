@@ -14,5 +14,7 @@ interface ProfileApi {
     suspend fun getCurrentUser(@Header("Authorization") accessToken: String?) : Response<GetCurrentUserResponse>
 
     @PUT("/api/v1/users/me/")
-    suspend fun updateUser(@Body updateUserRequest: UpdateUserRequest) : Response<UpdateUserResponse>
+    suspend fun updateUser(
+        @Header("Authorization") accessToken: String?,
+        @Body updateUserRequest: UpdateUserRequest) : Response<UpdateUserResponse>
 }

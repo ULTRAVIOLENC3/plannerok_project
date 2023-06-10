@@ -7,8 +7,8 @@ import com.example.plannerok_project.feature_auth.domain.model.response.CheckAut
 import com.example.plannerok_project.feature_auth.domain.model.response.SendAuthCodeResponse
 import com.example.plannerok_project.feature_auth.domain.model.response.UserRegisterResponse
 import com.example.plannerok_project.core.utils.Resource
-import com.example.plannerok_project.core.data.model.request.RefreshTokenRequest
-import com.example.plannerok_project.core.data.model.response.RefreshTokenResponse
+import com.example.plannerok_project.core.refresh_token.RefreshTokenRequest
+import com.example.plannerok_project.core.refresh_token.RefreshTokenResponse
 
 interface AuthRepository {
     suspend fun sendAuthCode(sendAuthCodeRequest : SendAuthCodeRequest) : Resource<SendAuthCodeResponse>

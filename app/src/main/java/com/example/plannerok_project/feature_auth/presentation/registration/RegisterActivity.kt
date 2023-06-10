@@ -3,11 +3,15 @@ package com.example.plannerok_project.feature_auth.presentation.registration
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.plannerok_project.feature_auth.domain.model.request.UserRegisterRequest
 import com.example.plannerok_project.databinding.ActivityRegisterBinding
+import com.example.plannerok_project.feature_auth.presentation.authorisation.TAG
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -46,6 +50,12 @@ class RegisterActivity : ComponentActivity(), RegisterViewModelListener {
             )
             )
         }
+
+        viewModel.validationErrorUserRegister.observe(this) { error ->
+            Log.d(TAG, error)
+            Toast.makeText (this, error, Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     override fun navigateToOtherActivity(activityClass: Class<*>) {
